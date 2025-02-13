@@ -5,16 +5,16 @@
 #include "constants.h"
 
 
-// Define pins for SD card communication (adjust if needed)
-#define SD_CS_PIN 10  // Chip Select pin for the SD card module
+// // Define pins for SD card communication (adjust if needed)
+// #define SD_CS_PIN 10  // Chip Select pin for the SD card module
 
-// SD card object
-SdFat SD;
+// // SD card object
+// SdFat SD;
 
 // File object for the audio file
-File audioFile;
+// File audioFile;
 
-const char* filename = "audio.wav"; // Save as WAV file
+// const char* filename = "audio.wav"; // Save as WAV file
 struct wav_header {
   char riff_header[4] = {'R', 'I', 'F', 'F'};
   uint32_t riff_chunk_size;
@@ -40,18 +40,8 @@ void setup() {
   pinMode(LEDB, OUTPUT);
 
   initPDM();
+  initSD();
 
-    // Initialize SD card
-  if (!SD.begin(SD_CS_PIN)) {
-    println("SD card initialization failed!");
-    while (1); // Stop execution if SD card fails
-  }
-  // Serial.println("SD card initialized.");
-  println("SD card initialised.");
-    // Delete existing file (optional)
-  if (SD.exists(filename)) {
-    SD.remove(filename);
-  }
 
   // Open audio file for writing
   audioFile = SD.open(filename, FILE_WRITE);

@@ -1,8 +1,12 @@
 #include <PDM.h>
+#include <SdFat.h>
 #include "Arduino.h"
 #include "pdm_functions.h"
 #include "constants.h"
 
+
+// Define pins for SD card communication (adjust if needed)
+#define SD_CS_PIN 10  // Chip Select pin for the SD card module
 
 
 bool serialInitialised = false;
@@ -59,4 +63,16 @@ void initPDM() {
     println("Failed to start PDM!");
     while (1);
   }
+}
+
+void initSD() {
+  if (!SD.begin(SD_CS_PIN)) {
+    println("SD card initialization failed!");
+    while (1); 
+  }
+  println("SD card initialised.");
+  if (SD.exists(filename)) {
+    SD.remove(filename);
+  }
+
 }

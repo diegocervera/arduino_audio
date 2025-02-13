@@ -1,6 +1,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
+#include <SdFat.h>
+
 
 
 // default number of output channels
@@ -15,6 +17,16 @@ extern short sampleBuffer[BUFFER_SIZE];
 
 // Number of audio samples read
 extern volatile int samplesRead;
+
+// SD card object
+extern SdFat SD;
+
+// File name
+extern const char* filename;
+
+// File object for the audio file
+extern File audioFile;
+
 
 
 
