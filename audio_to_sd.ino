@@ -1,19 +1,6 @@
-/*
-  This example reads audio data from the on-board PDM microphones, and prints
-  out the samples to the Serial console. The Serial Plotter built into the
-  Arduino IDE can be used to plot the audio data (Tools -> Serial Plotter)
-
-  Circuit:
-  - Arduino Nano 33 BLE board, or
-  - Arduino Nano RP2040 Connect, or
-  - Arduino Portenta H7 board plus Portenta Vision Shield, or
-  - Arduino Nicla Vision
-
-  This example code is in the public domain.
-*/
-
 #include <PDM.h>
 #include <SdFat.h>
+#include "init_functions.h"
 
 // Define pins for SD card communication (adjust if needed)
 #define SD_CS_PIN 10  // Chip Select pin for the SD card module
@@ -56,8 +43,9 @@ volatile int samplesRead;
 
 unsigned int counter = 0;
 void setup() {
-  Serial.begin(9600);
-  while (!Serial);
+
+  initSerialConnection();
+  pinMode(LEDB, OUTPUT);
 
   // Configure the data receive callback
   PDM.onReceive(onPDMdata);
@@ -71,16 +59,17 @@ void setup() {
   // - a 16 kHz sample rate for the Arduino Nano 33 BLE Sense
   // - a 32 kHz or 64 kHz sample rate for the Arduino Portenta Vision Shield
   if (!PDM.begin(channels, frequency)) {
-    Serial.println("Failed to start PDM!");
+    println("Failed to start PDM!");
     while (1);
   }
 
     // Initialize SD card
   if (!SD.begin(SD_CS_PIN)) {
-    Serial.println("SD card initialization failed!");
+    println("SD card initialization failed!");
     while (1); // Stop execution if SD card fails
   }
-  Serial.println("SD card initialized.");
+  // Serial.println("SD card initialized.");
+  println("SD card initialised.");
     // Delete existing file (optional)
   if (SD.exists(filename)) {
     SD.remove(filename);
@@ -89,11 +78,11 @@ void setup() {
   // Open audio file for writing
   audioFile = SD.open(filename, FILE_WRITE);
   if (!audioFile) {
-    Serial.println("Error opening audio file!");
+    println("Error opening audio file!");
     while (1); // Stop if file open fails
   }
-  Serial.print("Recording to: ");
-  Serial.println(filename);
+  print("Recording to: ");
+  println(filename);
 
   wav_header header;
   header.num_channels = channels;
@@ -101,7 +90,10 @@ void setup() {
   header.byte_rate = frequency * channels * 2;
   header.block_align = channels * 2;
   audioFile.write((const uint8_t*)&header, sizeof(header));
-  Serial.println("WAV Header Written");
+  println("WAV Header Written");
+
+  println("Initialisation sucessful.");
+  digitalWrite(LEDB, LOW);
 }
 
 void loop() {
@@ -129,8 +121,8 @@ void loop() {
     samplesRead = 0;
   }
 
-  if (counter > 10000000) {
-    Serial.println("Stopping recording...");
+  if (counter > 5000000) {
+    println("Stopping recording...");
 
     // Update WAV header with correct sizes
     wav_header header;
@@ -140,10 +132,10 @@ void loop() {
     // Seek to the beginning of the file to overwrite the header
     audioFile.seek(0);
     audioFile.write((const uint8_t*)&header, sizeof(header));
-    Serial.println("WAV Header Updated");
+    println("WAV Header Updated");
 
     audioFile.close(); // Close the file
-    Serial.println("Recording stopped and file saved.");
+    println("Recording stopped and file saved.");
     PDM.end();  // Stop PDM
     while(1);
   }
