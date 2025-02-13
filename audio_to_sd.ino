@@ -1,6 +1,9 @@
 #include <PDM.h>
 #include <SdFat.h>
+#include "pdm_functions.h"
 #include "init_functions.h"
+#include "constants.h"
+
 
 // Define pins for SD card communication (adjust if needed)
 #define SD_CS_PIN 10  // Chip Select pin for the SD card module
@@ -11,14 +14,6 @@ SdFat SD;
 // File object for the audio file
 File audioFile;
 
-// default number of output channels
-static const char channels = 1;
-
-// default PCM output frequency
-static const int frequency = 16000;
-
-// Buffer to read samples into, each sample is 16-bits
-short sampleBuffer[512];
 const char* filename = "audio.wav"; // Save as WAV file
 struct wav_header {
   char riff_header[4] = {'R', 'I', 'F', 'F'};
@@ -38,30 +33,13 @@ struct wav_header {
 
 unsigned long totalBytes = 0;
 
-// Number of audio samples read
-volatile int samplesRead;
-
 unsigned int counter = 0;
 void setup() {
 
   initSerialConnection();
   pinMode(LEDB, OUTPUT);
 
-  // Configure the data receive callback
-  PDM.onReceive(onPDMdata);
-
-  // Optionally set the gain
-  // Defaults to 20 on the BLE Sense and 24 on the Portenta Vision Shield
-  // PDM.setGain(30);
-
-  // Initialize PDM with:
-  // - one channel (mono mode)
-  // - a 16 kHz sample rate for the Arduino Nano 33 BLE Sense
-  // - a 32 kHz or 64 kHz sample rate for the Arduino Portenta Vision Shield
-  if (!PDM.begin(channels, frequency)) {
-    println("Failed to start PDM!");
-    while (1);
-  }
+  initPDM();
 
     // Initialize SD card
   if (!SD.begin(SD_CS_PIN)) {
@@ -105,19 +83,6 @@ void loop() {
     totalBytes += samplesRead * 2;
 
     // Clear the read count
-    // Print samples to the serial monitor or plotter
-    //for (int i = 0; i < samplesRead; i++) {
-      
-    //  if(channels == 2) {
-    //    Serial.print("L:");
-    //    Serial.print(sampleBuffer[i]);
-    //    Serial.print(" R:");
-    //    i++;
-    //  }
-    //  Serial.println(sampleBuffer[i]);
-    //}
-
-    // Clear the read count
     samplesRead = 0;
   }
 
@@ -140,20 +105,4 @@ void loop() {
     while(1);
   }
   counter++;
-}
-
-/**
- * Callback function to process the data from the PDM microphone.
- * NOTE: This callback is executed as part of an ISR.
- * Therefore using `Serial` to print messages inside this function isn't supported.
- * */
-void onPDMdata() {
-  // Query the number of available bytes
-  int bytesAvailable = PDM.available();
-
-  // Read into the sample buffer
-  PDM.read(sampleBuffer, bytesAvailable);
-
-  // 16-bit, 2 bytes per sample
-  samplesRead = bytesAvailable / 2;
 }

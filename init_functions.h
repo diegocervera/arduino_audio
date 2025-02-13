@@ -6,5 +6,6 @@ void println(int number);
 void print(const char* message);
 void print(int number);
 void initSerialConnection();
+void initPDM();
 
 #endif
