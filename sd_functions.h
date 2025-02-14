@@ -5,6 +5,7 @@
 
 File openAudioFile(const char* filename);
 void writeWAVHeader(File &audiofile);
-
+void writeSamples(File &audioFile, volatile int &samplesRead, unsigned long &totalBytes);
+void closeWAVFile(File &audioFile, unsigned long &totalBytes);
 
 #endif

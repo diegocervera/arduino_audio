@@ -22,12 +22,6 @@ extern volatile int samplesRead;
 // SD card object
 extern SdFat SD;
 
-// File name
-// extern const char* filename;
-
-// File object for the audio file
-extern File audioFile;
-
 
 struct wav_header {
   char riff_header[4] = {'R', 'I', 'F', 'F'};

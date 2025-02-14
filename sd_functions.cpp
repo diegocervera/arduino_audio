@@ -29,3 +29,27 @@ void writeWAVHeader(File &audioFile){
   audioFile.write((const uint8_t*)&header, sizeof(header));
   println("WAV Header Written");
 }
+
+void writeSamples(File &audioFile, volatile int &samplesRead, unsigned long &totalBytes){
+
+    // Write the audio data to the SD card
+    audioFile.write((const uint8_t*)sampleBuffer, samplesRead * 2); // *2 because short is 2 bytes
+    totalBytes += samplesRead * 2;
+
+    // Clear the read count
+    samplesRead = 0;
+}
+
+void closeWAVFile(File &audioFile, unsigned long &totalBytes){
+  wav_header header;
+  header.riff_chunk_size = 36 + totalBytes;
+  header.data_chunk_size = totalBytes;
+
+  // Seek to the beginning of the file to overwrite the header
+  audioFile.seek(0);
+  audioFile.write((const uint8_t*)&header, sizeof(header));
+  audioFile.close(); // Close the file
+
+  println("Recording stopped and file saved.");
+  println("WAV Header Updated");
+}
