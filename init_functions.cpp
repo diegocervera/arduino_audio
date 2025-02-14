@@ -71,8 +71,4 @@ void initSD() {
     while (1); 
   }
   println("SD card initialised.");
-  if (SD.exists(filename)) {
-    SD.remove(filename);
-  }
-
 }
