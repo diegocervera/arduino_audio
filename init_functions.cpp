@@ -1,4 +1,9 @@
+#include <PDM.h>
+#include <SdFat.h>
 #include "Arduino.h"
+#include "pdm_functions.h"
+#include "constants.h"
+
 bool serialInitialised = false;
 
 void println(const char* message) {
@@ -26,7 +31,6 @@ void print(int number) {
 }
 
 
-
 void initSerialConnection() {
   delay(2000);
   if (Serial) {
@@ -36,3 +40,6 @@ void initSerialConnection() {
     println("Serial not initialised. No Serial Monitor Detected.");
   }
 }
+
+
+
