@@ -3,6 +3,19 @@
 #include "constants.h"
 #include <SdFat.h>
 
+// Define pins for SD card communication (adjust if needed)
+#define SD_CS_PIN 10  // Chip Select pin for the SD card module
+
+SdFat SD;
+
+void initSD() {
+  if (!SD.begin(SD_CS_PIN)) {
+    println("SD card initialization failed!");
+    while (1); 
+  }
+  println("SD card initialised.");
+}
+
 
 File openAudioFile(const char* filename) {
   // Open audio file for writing

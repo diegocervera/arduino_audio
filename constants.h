@@ -4,8 +4,6 @@
 #include <SdFat.h>
 #include <stdint.h>
 
-
-
 // default number of output channels
 extern const char channels;
 
@@ -18,9 +16,6 @@ extern short sampleBuffer[BUFFER_SIZE];
 
 // Number of audio samples read
 extern volatile int samplesRead;
-
-// SD card object
-extern SdFat SD;
 
 
 struct wav_header {
