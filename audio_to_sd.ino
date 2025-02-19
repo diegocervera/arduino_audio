@@ -15,6 +15,32 @@ File audioFile;
 
 ButtonProperties buttonProperties;
 
+// Function to be called on long press
+void LongPressFunction() {
+  if (!buttonProperties.isInWhiteMode) {
+    buttonProperties.lastColourIndex = buttonProperties.ColourIndex;
+    setColour(0); // White
+    buttonProperties.isInWhiteMode = true;
+    // println("Setting to White");
+    Serial.println("Started recording.");
+  }
+}
+
+void ShortPressFunction() {
+  if (buttonProperties.isInWhiteMode) {
+    setColour(buttonProperties.lastColourIndex);
+    buttonProperties.isInWhiteMode = false;
+    println("Stopped recording.");
+    print("Current user: ");
+    println(buttonProperties.lastColourIndex);
+  } else {
+    buttonProperties.ColourIndex = (buttonProperties.ColourIndex % 3) + 1;
+    setColour(buttonProperties.ColourIndex);
+    print("Switched to user: ");
+    println(buttonProperties.ColourIndex);
+  }
+}
+
 void setup() {
 
   initSerialConnection();
@@ -31,6 +57,9 @@ void setup() {
   digitalWrite(LEDB, LOW);
 
   pinMode(buttonProperties.buttonPin, INPUT_PULLUP);
+  buttonProperties.onLongPress = LongPressFunction;
+  buttonProperties.onShortPress = ShortPressFunction;
+
 
 }
 

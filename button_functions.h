@@ -1,6 +1,8 @@
 #ifndef BUTTON_FUNCTIONS_H
 #define BUTTON_FUNCTIONS_H
 
+#include <functional>
+
 struct ButtonProperties {
   const int buttonPin = 2;
   bool buttonState = HIGH;        // Current state of the button (starts HIGH because of pull-up resistor)
@@ -13,6 +15,12 @@ struct ButtonProperties {
   bool lastButtonState = HIGH; // Last button state
   bool buttonPressed = false;  // Flag for button press
   bool isInWhiteMode = false;  // Flag to track if LED is in white mode
+
+  // Add a member for the long press callback
+  std::function<void()> onLongPress; // Store the function to call on long press
+
+  // Add a member for the short press callback
+  std::function<void()> onShortPress;
 };
 
 void setColour(int index);
