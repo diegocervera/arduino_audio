@@ -17,10 +17,12 @@ struct ButtonProperties {
   bool isInWhiteMode = false;  // Flag to track if LED is in white mode
 
   // Add a member for the long press callback
-  std::function<void()> onLongPress; // Store the function to call on long press
+  std::function<void()> onStartRecording; // Store the function to call on long press
 
   // Add a member for the short press callback
-  std::function<void()> onShortPress;
+  std::function<void()> onStopRecording;
+  std::function<void()> onSwitchUser;
+
 };
 
 void setColour(int index);

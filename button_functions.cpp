@@ -27,37 +27,33 @@ void buttonListener(ButtonProperties &buttonProperties) {
     // Button released after being pressed
     unsigned long pressDuration = millis() - buttonProperties.buttonPressStartTime;
 
-
     if (pressDuration > buttonProperties.debounceDelay) { // Filter out noise
       if (pressDuration < buttonProperties.longPressDuration) {
         // Short Press
-        if (buttonProperties.onShortPress) {
-          buttonProperties.onShortPress(); // Execute the short press callback
+        if (buttonProperties.isInWhiteMode) {
+          setColour(buttonProperties.lastColourIndex);
+          buttonProperties.isInWhiteMode = false;
+          if (buttonProperties.onStopRecording){
+            buttonProperties.onStopRecording();
+          }
+
+        } else {
+          buttonProperties.ColourIndex = (buttonProperties.ColourIndex % 3) + 1;
+          setColour(buttonProperties.ColourIndex);
+          if (buttonProperties.onSwitchUser){
+            buttonProperties.onSwitchUser();
+          }
         }
-        // if (buttonProperties.isInWhiteMode) {
-        //   setColour(buttonProperties.lastColourIndex);
-        //   buttonProperties.isInWhiteMode = false;
-        //   println("Stopped recording.");
-        //   print("Current user: ");
-        //   println(buttonProperties.lastColourIndex);
-        // } else {
-        //   buttonProperties.ColourIndex = (buttonProperties.ColourIndex % 3) + 1;
-        //   setColour(buttonProperties.ColourIndex);
-        //   print("Switched to user: ");
-        //   println(buttonProperties.ColourIndex);
-        // }
       } else {
         // Long Press
-        if (buttonProperties.onLongPress) {
-          buttonProperties.onLongPress(); // Execute the long press callback
+        if (!buttonProperties.isInWhiteMode) {
+          buttonProperties.lastColourIndex = buttonProperties.ColourIndex;
+          setColour(0); // White
+          buttonProperties.isInWhiteMode = true;
+          if (buttonProperties.onStartRecording){
+            buttonProperties.onStartRecording();
+          }
         }
-        // if (!buttonProperties.isInWhiteMode) {
-        //   buttonProperties.lastColourIndex = buttonProperties.ColourIndex;
-        //   setColour(0); // White
-        //   buttonProperties.isInWhiteMode = true;
-        //   // println("Setting to White");
-        //   println("Started recording.");
-        // }
       }
       buttonProperties.buttonPressed = false; // Clear buttonPressed flag *after* processing
     } else {

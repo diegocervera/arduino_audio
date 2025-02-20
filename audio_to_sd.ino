@@ -15,36 +15,28 @@ File audioFile;
 
 ButtonProperties buttonProperties;
 
-// Function to be called on long press
-void LongPressFunction() {
-  if (!buttonProperties.isInWhiteMode) {
-    buttonProperties.lastColourIndex = buttonProperties.ColourIndex;
-    setColour(0); // White
-    buttonProperties.isInWhiteMode = true;
-    // println("Setting to White");
-    Serial.println("Started recording.");
-  }
+
+void onSwitchUser(){
+  print("Switched to user: ");
+  println(buttonProperties.ColourIndex);
+}
+void onStartRecording(){
+  print("Current user: ");
+  println(buttonProperties.lastColourIndex);
+  println("Started recording.");
 }
 
-void ShortPressFunction() {
-  if (buttonProperties.isInWhiteMode) {
-    setColour(buttonProperties.lastColourIndex);
-    buttonProperties.isInWhiteMode = false;
-    println("Stopped recording.");
-    print("Current user: ");
-    println(buttonProperties.lastColourIndex);
-  } else {
-    buttonProperties.ColourIndex = (buttonProperties.ColourIndex % 3) + 1;
-    setColour(buttonProperties.ColourIndex);
-    print("Switched to user: ");
-    println(buttonProperties.ColourIndex);
-  }
+void onStopRecording(){
+  println("Stopped recording.");
+  print("Current user: ");
+  println(buttonProperties.ColourIndex);
 }
 
 void setup() {
 
   initSerialConnection();
-  pinMode(LEDB, OUTPUT);
+  pinMode(LEDR, OUTPUT);
+  pinMode(LEDG, OUTPUT);
 
   initPDM();
   initSD();
@@ -54,13 +46,13 @@ void setup() {
 
   writeWAVHeader(audioFile);
   println("Initialisation sucessful.");
-  digitalWrite(LEDB, LOW);
+  digitalWrite(LEDR, LOW);
+  digitalWrite(LEDG, LOW);
 
   pinMode(buttonProperties.buttonPin, INPUT_PULLUP);
-  buttonProperties.onLongPress = LongPressFunction;
-  buttonProperties.onShortPress = ShortPressFunction;
-
-
+  buttonProperties.onSwitchUser = onSwitchUser;
+  buttonProperties.onStartRecording = onStartRecording;
+  buttonProperties.onStopRecording = onStopRecording;
 }
 
 void loop() {
