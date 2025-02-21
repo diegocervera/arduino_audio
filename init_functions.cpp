@@ -41,5 +41,18 @@ void initSerialConnection() {
   }
 }
 
+void problemOnInit(){
+  while (1) {
+  digitalWrite(LEDR, LOW);
+  digitalWrite(LEDB, LOW);
+  digitalWrite(LEDG, HIGH);
+  delay(500);
+  digitalWrite(LEDR, HIGH);
+  digitalWrite(LEDB, HIGH);
+  digitalWrite(LEDG, HIGH);
+  delay(500);
+  }
+}
+
 
 
