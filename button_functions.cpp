@@ -48,11 +48,11 @@ void buttonListener(ButtonProperties &buttonProperties) {
         // Long Press
         if (!buttonProperties.isInWhiteMode) {
           buttonProperties.lastColourIndex = buttonProperties.ColourIndex;
-          setColour(0); // White
           buttonProperties.isInWhiteMode = true;
           if (buttonProperties.onStartRecording){
             buttonProperties.onStartRecording();
           }
+          setColour(0); // White
         }
       }
       buttonProperties.buttonPressed = false; // Clear buttonPressed flag *after* processing
