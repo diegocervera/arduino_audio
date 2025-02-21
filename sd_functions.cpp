@@ -11,6 +11,7 @@ SdFat SD;
 void initSD() {
   if (!SD.begin(SD_CS_PIN)) {
     println("SD card initialization failed!");
+    problemOnInit();
     while (1); 
   }
   println("SD card initialised.");
@@ -26,6 +27,7 @@ File openAudioFile(const char* filename) {
   File audioFile = SD.open(filename, FILE_WRITE);
   if (!audioFile) {
   println("Error opening audio file!");
+  problemOnInit();
   while (1); // Stop if file open fails
   }
   print("Recording to: ");

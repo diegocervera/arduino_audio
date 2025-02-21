@@ -8,5 +8,7 @@ void print(int number);
 void initSerialConnection();
 void initPDM();
 void initSD();
+void problemOnInit();
+
 
 #endif
